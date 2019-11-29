@@ -29,7 +29,20 @@ class GameBoard(object):
         for x in range(8,0,-1):
             tile_list = self.tiles.get(x)
             for y in range(0,8):
-                return_str += tile_list[y].__repr__() + ' '
+                if tile_list[y].occupant == None:
+                    return_str += ' . '
+                elif tile_list[y].occupant.type == 'Pawn':
+                    return_str += ' P '
+                elif tile_list[y].occupant.type == 'King':
+                    return_str += ' K '
+                elif tile_list[y].occupant.type == 'Queen':
+                    return_str += ' Q '
+                elif tile_list[y].occupant.type == 'Rook':
+                    return_str += ' R '
+                elif tile_list[y].occupant.type == 'Knight':
+                    return_str += ' k '
+                elif tile_list[y].occupant.type == 'Bishop':
+                    return_str += ' B '
             return_str += '\n'
         return return_str
 

@@ -10,4 +10,5 @@ class Pawn(GamePiece):
         self.moveset = []
         self.active = True
         self.current_tile = None
+        self.in_start_position = True
 
