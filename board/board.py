@@ -5,6 +5,16 @@ class GameBoard(object):
     def __init__(self):
         self.tiles = self.generate_tiles()
 
+    def get_tile(self, x, y):
+        """
+        Get tile x,y
+        :param x:
+        :param y:
+        :return:
+        """
+        row_tiles = list(self.tiles.values())
+        print(row_tiles[y][x].occupant)
+
     def generate_tiles(self):
         """
         Generates the dictionary of tiles.

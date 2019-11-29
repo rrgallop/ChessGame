@@ -1,11 +1,11 @@
 import sys, pygame
 from board.board import GameBoard
 from game import Game
+import math
 
 SQUARE_SIZE = 50
 
 BLACK_KING = pygame.image.load('images/black_king.png')
-BLACK_KING = pygame.transform.scale(BLACK_KING, (50, 50))
 BLACK_QUEEN = pygame.image.load('images/black_queen.png')
 BLACK_ROOK = pygame.image.load('images/black_rook.png')
 BLACK_BISHOP = pygame.image.load('images/black_bishop.png')
@@ -35,6 +35,7 @@ black_team = scale_images(black_team)
 screen = pygame.display.set_mode((8 * SQUARE_SIZE, 8 * SQUARE_SIZE), pygame.RESIZABLE)
 screen_title = 'Chess Game'
 pygame.display.set_caption(screen_title)
+pygame.display.flip()
 
 
 def play(game):
@@ -42,11 +43,16 @@ def play(game):
 
     while run:
         print_board(game.gameboard)
+        # pygame.event.wait()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 print("Bye")
-
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = pygame.mouse.get_pos()
+                tile_x, tile_y = math.floor(mx/SQUARE_SIZE), math.floor(my/SQUARE_SIZE)
+                print(f"tile: {tile_x+1},{tile_y+1}")
+                game.gameboard.get_tile(tile_x, tile_y)
 
 def paint_occupant(tile):
     if tile.occupant.team == 'black':
@@ -62,19 +68,20 @@ def paint_occupant(tile):
             screen.blit(black_team[4], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
         if tile.occupant.type == 'Rook':
             screen.blit(black_team[5], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+
     if tile.occupant.team == 'white':
         if tile.occupant.type == 'King':
-            screen.blit(black_team[0], ((tile.x-1)*SQUARE_SIZE, (tile.y-1)*SQUARE_SIZE))
+            screen.blit(white_team[0], ((tile.x-1)*SQUARE_SIZE, (tile.y-1)*SQUARE_SIZE))
         if tile.occupant.type == 'Bishop':
-            screen.blit(black_team[1], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[1], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
         if tile.occupant.type == 'Knight':
-            screen.blit(black_team[2], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[2], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
         if tile.occupant.type == 'Pawn':
-            screen.blit(black_team[3], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[3], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
         if tile.occupant.type == 'Queen':
-            screen.blit(black_team[4], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[4], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
         if tile.occupant.type == 'Rook':
-            screen.blit(black_team[5], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[5], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
 
 
 def print_board(board):
@@ -98,6 +105,5 @@ def print_board(board):
 
 
 game = Game()
-print(game.gameboard.tiles)
 play(game)
 
