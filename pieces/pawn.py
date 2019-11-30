@@ -4,12 +4,9 @@ from pieces.gamepiece import GamePiece
 
 class Pawn(GamePiece):
 
-    def __init__(self, team):
+    def __init__(self, team, board):
+        super().__init__(team, board)
         self.type = 'Pawn'
-        self.team = team
-        self.moveset = []
-        self.active = True
-        self.current_tile = None
         self.in_start_position = True
 
     def get_moves(self):
@@ -24,7 +21,9 @@ class Pawn(GamePiece):
         elif self.team == 'white':
             team_factor = 1
 
+
+
         # if self.in_start_position:
-            
+
 
 

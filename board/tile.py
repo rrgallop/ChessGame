@@ -8,6 +8,9 @@ class Tile:
         # Tiles can only have one occupant at a time
         self.occupant = None
 
+        # used to track which tile the user has clicked on last
+        self.selected = False
+
         # Tiles are either white or black, so we determine that during board creation
         self.color = self.assign_color()
 

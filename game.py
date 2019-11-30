@@ -19,7 +19,7 @@ class Game(object):
         team_roster = []
         for _ in range(0, len(pawn_row)):
             this_tile = pawn_row[_]
-            new_piece = Pawn(team)
+            new_piece = Pawn(team, self.gameboard)
             this_tile.set_occupant(new_piece)
             team_roster.append(new_piece)
 
@@ -33,7 +33,7 @@ class Game(object):
         team_roster = []
         for _ in range(0, len(pawn_row)):
             this_tile = pawn_row[_]
-            new_piece = Pawn(team)
+            new_piece = Pawn(team, self.gameboard)
             this_tile.set_occupant(new_piece)
             team_roster.append(new_piece)
 
@@ -54,14 +54,14 @@ class Game(object):
             back_row = self.gameboard.tiles[1]
 
         back_row_roster = []
-        left_rook = Rook(team)
-        left_knight = Knight(team)
-        left_bishop = Bishop(team)
-        king = King(team)
-        queen = Queen(team)
-        right_bishop = Bishop(team)
-        right_knight = Knight(team)
-        right_rook = Rook(team)
+        left_rook = Rook(team, self.gameboard)
+        left_knight = Knight(team, self.gameboard)
+        left_bishop = Bishop(team, self.gameboard)
+        king = King(team, self.gameboard)
+        queen = Queen(team, self.gameboard)
+        right_bishop = Bishop(team, self.gameboard)
+        right_knight = Knight(team, self.gameboard)
+        right_rook = Rook(team, self.gameboard)
 
         back_row[0].set_occupant(left_rook)
         back_row[1].set_occupant(left_knight)

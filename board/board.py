@@ -15,7 +15,9 @@ class GameBoard(object):
         :param y: int represeting y coord
         """
         row_tiles = list(self.tiles.values())
-        print(row_tiles[y][x].occupant)
+        # row_tiles[y][x].selected = True
+        # print(row_tiles[y][x].occupant)
+        return row_tiles[y][x]
 
     def generate_tiles(self):
         """

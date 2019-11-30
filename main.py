@@ -45,7 +45,7 @@ def play(game):
     :return:
     """
     run = True
-
+    selected_tile = None
     while run:
         print_board(game.gameboard)
         for event in pygame.event.get():
@@ -53,10 +53,15 @@ def play(game):
                 run = False
                 print("Bye")
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if selected_tile:
+                    selected_tile.selected = False
+                    selected_tile = None
                 mx, my = pygame.mouse.get_pos()
                 tile_x, tile_y = math.floor(mx/SQUARE_SIZE), 7-math.floor(my/SQUARE_SIZE)
                 print(f"tile: {tile_x+1},{tile_y+1}")
-                game.gameboard.get_tile(tile_x, tile_y)
+                selected_tile = game.gameboard.get_tile(tile_x, tile_y)
+                print(selected_tile.occupant)
+                selected_tile.selected = True
 
 
 def paint_occupant(tile):
@@ -116,7 +121,9 @@ def print_board(board):
             if tile.color == 'black':
                 pygame.draw.rect(screen, (0,0,0), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             else:
-                pygame.draw.rect(screen, (200, 200, 200), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(screen, (200,200,200), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+            if tile.selected:
+                pygame.draw.rect(screen, (200,0,0), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             if tile.occupant:
                 paint_occupant(tile)
 

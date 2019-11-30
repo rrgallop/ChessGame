@@ -4,12 +4,15 @@ from board.board import GameBoard
 
 class GamePiece(object):
 
-    def __init__(self, team):
+    def __init__(self, team, board):
         # rook, pawn, king, queen, ...
         self.type = ''
 
         # black or white
         self.team = team
+
+        # so the piece can access the gameboard
+        self.gameboard = board
 
         # moveset to represent a list of tiles that the piece can potentially move to
         # each piece will have its own method for generating a moveset,
