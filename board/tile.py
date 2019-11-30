@@ -36,14 +36,14 @@ class Tile:
             row_starts_with_white = False
         if row_starts_with_white:
             if self.x % 2 == 1:
-                return 'white'
-            else:
                 return 'black'
+            else:
+                return 'white'
         else:
             if self.x % 2 == 1:
-                return 'black'
-            else:
                 return 'white'
+            else:
+                return 'black'
 
     def __str__(self):
         return str(self.x)+','+str(self.y)

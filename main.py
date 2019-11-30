@@ -46,37 +46,37 @@ def play(game):
                 mx, my = pygame.mouse.get_pos()
                 tile_x, tile_y = math.floor(mx/SQUARE_SIZE), 7-math.floor(my/SQUARE_SIZE)
                 print(f"tile: {tile_x+1},{tile_y+1}")
-                game.gameboard.get_tile(tile_x, 7-tile_y)
+                game.gameboard.get_tile(tile_x, tile_y)
 
 
 def paint_occupant(tile):
     if tile.occupant.team == 'black':
         if tile.occupant.type == 'King':
-            screen.blit(black_team[0], ((tile.x-1)*SQUARE_SIZE, (tile.y-1)*SQUARE_SIZE))
+            screen.blit(black_team[0], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Bishop':
-            screen.blit(black_team[1], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(black_team[1], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Knight':
-            screen.blit(black_team[2], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(black_team[2], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Pawn':
-            screen.blit(black_team[3], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(black_team[3], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Queen':
-            screen.blit(black_team[4], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(black_team[4], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Rook':
-            screen.blit(black_team[5], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(black_team[5], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
 
     if tile.occupant.team == 'white':
         if tile.occupant.type == 'King':
-            screen.blit(white_team[0], ((tile.x-1)*SQUARE_SIZE, (tile.y-1)*SQUARE_SIZE))
+            screen.blit(white_team[0], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Bishop':
-            screen.blit(white_team[1], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[1], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Knight':
-            screen.blit(white_team[2], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[2], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Pawn':
-            screen.blit(white_team[3], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[3], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Queen':
-            screen.blit(white_team[4], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[4], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
         if tile.occupant.type == 'Rook':
-            screen.blit(white_team[5], ((tile.x-1) * SQUARE_SIZE, (tile.y-1) * SQUARE_SIZE))
+            screen.blit(white_team[5], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
 
 
 def print_board(board):
@@ -84,9 +84,9 @@ def print_board(board):
     for k in board.tiles:
         for tile in board.tiles[k]:
             if tile.color == 'black':
-                pygame.draw.rect(screen, (0,0,0), ((tile.x-1)*SQUARE_SIZE, ((tile.y-1)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(screen, (0,0,0), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             else:
-                pygame.draw.rect(screen, (200, 200, 200), ((tile.x-1)*SQUARE_SIZE, ((tile.y-1)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(screen, (200, 200, 200), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             if tile.occupant:
                 paint_occupant(tile)
 
