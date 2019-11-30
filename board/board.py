@@ -7,10 +7,12 @@ class GameBoard(object):
 
     def get_tile(self, x, y):
         """
-        Get tile x,y
-        :param x:
-        :param y:
-        :return:
+        Get tile x,y.
+
+        NOTE: Tiles are organized by row, so all tiles at the same height are
+        on the same list. That's why we're doing the [y][x] lookup below.
+        :param x: int representing x coord
+        :param y: int represeting y coord
         """
         row_tiles = list(self.tiles.values())
         print(row_tiles[y][x].occupant)
@@ -35,6 +37,10 @@ class GameBoard(object):
         return tiles
 
     def __repr__(self):
+        """
+        ToString method
+        :return: string object describing the board
+        """
         return_str = ''
         for x in range(8,0,-1):
             tile_list = self.tiles.get(x)

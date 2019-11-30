@@ -23,6 +23,11 @@ white_team = [WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_PAWN, WHITE_QUEEN, W
 
 
 def scale_images(team_list):
+    """
+    Scales the .png image to fit the current size of the tile.
+    :param team_list: A list of pygame image objects, pre-transformation.
+    :return: new_team_list: Transformed images are returned in new list object
+    """
     new_team_list = []
     for image in team_list:
         new_team_list.append(pygame.transform.scale(image, (50, 50)))
@@ -34,6 +39,11 @@ black_team = scale_images(black_team)
 
 
 def play(game):
+    """
+    The main game loop
+    :param game: Game object, managing all game data
+    :return:
+    """
     run = True
 
     while run:
@@ -50,6 +60,17 @@ def play(game):
 
 
 def paint_occupant(tile):
+    """
+    Paints the game piece onto the tile that it occupies.
+
+    NOTE: 1,1 in pygame is the top-left corner of the screen.
+    1,1 in Chess is the bottom left of the screen.
+    If some of the math looks kinda weird at first glance, that's why.
+    I'm basically translating between the world of pygame and Chess.
+
+    :param tile: Tile object that we are painting over.
+    :return:
+    """
     if tile.occupant.team == 'black':
         if tile.occupant.type == 'King':
             screen.blit(black_team[0], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
@@ -80,7 +101,16 @@ def paint_occupant(tile):
 
 
 def print_board(board):
+    """
+    Prints the game board to the screen.
 
+    NOTE: 1,1 in pygame is the top-left corner of the screen.
+    1,1 in Chess is the bottom left of the screen.
+    If some of the math looks kinda weird at first glance, that's why.
+    I'm basically translating between the world of pygame and Chess.
+
+    :param board: The gameboard object
+    """
     for k in board.tiles:
         for tile in board.tiles[k]:
             if tile.color == 'black':
@@ -93,7 +123,7 @@ def print_board(board):
         pygame.display.flip()
 
 
-screen = pygame.display.set_mode((8 * SQUARE_SIZE, 8 * SQUARE_SIZE))
+screen = pygame.display.set_mode((8*SQUARE_SIZE, 8*SQUARE_SIZE))
 screen_title = 'Chess Game'
 pygame.display.set_caption(screen_title)
 game = Game()
