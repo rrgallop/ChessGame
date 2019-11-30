@@ -45,23 +45,76 @@ def play(game):
     :return:
     """
     run = True
+
+    # used by GUI to track the currently selected tile
     selected_tile = None
+
+    # used by GUI to track whether or not a unit is "held" by the mouse cursor
+    held_unit = None
+
     while run:
+        mx, my = pygame.mouse.get_pos()
         print_board(game.gameboard)
+        if held_unit:
+            display_image = get_correct_image(held_unit)
+            screen.blit(display_image, (mx, my))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 print("Bye")
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                # release the unit, and if it's released on a tile it can be moved to, move it
+                if held_unit:
+                    held_unit.on_mouse = False
+                    held_unit = None
+                pass
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if selected_tile:
                     selected_tile.selected = False
                     selected_tile = None
-                mx, my = pygame.mouse.get_pos()
                 tile_x, tile_y = math.floor(mx/SQUARE_SIZE), 7-math.floor(my/SQUARE_SIZE)
                 print(f"tile: {tile_x+1},{tile_y+1}")
                 selected_tile = game.gameboard.get_tile(tile_x, tile_y)
-                print(selected_tile.occupant)
                 selected_tile.selected = True
+
+                # code used to "put" selected unit on the mouse cursor
+                if selected_tile.occupant:
+                    print(selected_tile.occupant)
+                    held_unit = selected_tile.occupant
+                    selected_tile.occupant.on_mouse = True
+                    if selected_tile.occupant.type == 'Pawn':
+                        selected_tile.occupant.get_moves()
+
+
+def get_correct_image(gamepiece):
+    if gamepiece.team == 'black':
+        if gamepiece.type == 'King':
+            return black_team[0]
+        if gamepiece.type == 'Bishop':
+            return black_team[1]
+        if gamepiece.type == 'Knight':
+            return black_team[2]
+        if gamepiece.type == 'Pawn':
+            return black_team[3]
+        if gamepiece.type == 'Queen':
+            return black_team[4]
+        if gamepiece.type == 'Rook':
+            return black_team[5]
+    else:
+        if gamepiece.type == 'King':
+            return white_team[0]
+        if gamepiece.type == 'Bishop':
+            return white_team[1]
+        if gamepiece.type == 'Knight':
+            return white_team[2]
+        if gamepiece.type == 'Pawn':
+            return white_team[3]
+        if gamepiece.type == 'Queen':
+            return white_team[4]
+        if gamepiece.type == 'Rook':
+            return white_team[5]
 
 
 def paint_occupant(tile):
@@ -76,33 +129,9 @@ def paint_occupant(tile):
     :param tile: Tile object that we are painting over.
     :return:
     """
-    if tile.occupant.team == 'black':
-        if tile.occupant.type == 'King':
-            screen.blit(black_team[0], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Bishop':
-            screen.blit(black_team[1], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Knight':
-            screen.blit(black_team[2], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Pawn':
-            screen.blit(black_team[3], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Queen':
-            screen.blit(black_team[4], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Rook':
-            screen.blit(black_team[5], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-
-    if tile.occupant.team == 'white':
-        if tile.occupant.type == 'King':
-            screen.blit(white_team[0], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Bishop':
-            screen.blit(white_team[1], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Knight':
-            screen.blit(white_team[2], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Pawn':
-            screen.blit(white_team[3], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Queen':
-            screen.blit(white_team[4], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
-        if tile.occupant.type == 'Rook':
-            screen.blit(white_team[5], ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-((tile.y)*SQUARE_SIZE)))
+    if not tile.occupant.on_mouse:
+        display_image = get_correct_image(tile.occupant)
+        screen.blit(display_image, ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-(tile.y*SQUARE_SIZE)))
 
 
 def print_board(board):
@@ -119,14 +148,27 @@ def print_board(board):
     for k in board.tiles:
         for tile in board.tiles[k]:
             if tile.color == 'black':
-                pygame.draw.rect(screen, (0,0,0), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(screen, (0, 0, 0), ((tile.x - 1)*SQUARE_SIZE, (
+                        (8 * SQUARE_SIZE) - tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
+                ))
             else:
-                pygame.draw.rect(screen, (200,200,200), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(screen, (200, 200, 200), ((tile.x - 1) * SQUARE_SIZE, (
+                        (8*SQUARE_SIZE)-tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
+                ))
             if tile.selected:
-                pygame.draw.rect(screen, (200,0,0), ((tile.x-1)*SQUARE_SIZE, ((8*SQUARE_SIZE)-(tile.y)*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(screen, (200, 0, 0), ((tile.x - 1) * SQUARE_SIZE, (
+                        (8*SQUARE_SIZE)-tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
+                ))
             if tile.occupant:
                 paint_occupant(tile)
 
+                # if the tile has an occupant, and the tile is selected, paint the board to represent
+                # the moves currently available to that occupant
+                if tile.selected:
+                    for move in tile.occupant.moveset:
+                        pygame.draw.rect(screen, (0, 200, 0), ((move.x - 1) * SQUARE_SIZE, (
+                            (8 * SQUARE_SIZE) - move.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
+                        ))
         pygame.display.flip()
 
 

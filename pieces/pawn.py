@@ -4,26 +4,24 @@ from pieces.gamepiece import GamePiece
 
 class Pawn(GamePiece):
 
-    def __init__(self, team, board):
-        super().__init__(team, board)
+    def __init__(self, team, board, tile):
+        super().__init__(team, board, tile)
         self.type = 'Pawn'
         self.in_start_position = True
 
     def get_moves(self):
-        """
-        Generates the set of tiles that are available for the piece to move to
-        next turn. team_factor is used to control direction of advancement on y-axis.
-        :return:
-        """
-        available_moves = []
+        self.moveset = []
         if self.team == 'black':
-            team_factor = -1
-        elif self.team == 'white':
-            team_factor = 1
+            direction = -1
+        else:
+            direction = 1
+        if self.in_start_position:
+            self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
+            self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction*2))
+        print(f"moves:{self.moveset}")
 
 
 
-        # if self.in_start_position:
 
 
 

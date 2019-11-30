@@ -23,6 +23,7 @@ class Tile:
         :return: n/a
         """
         if self.occupant == None:
+            gamepiece.current_tile = None
             self.occupant = gamepiece
             gamepiece.current_tile = self
         else:

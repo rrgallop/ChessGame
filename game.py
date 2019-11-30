@@ -19,8 +19,7 @@ class Game(object):
         team_roster = []
         for _ in range(0, len(pawn_row)):
             this_tile = pawn_row[_]
-            new_piece = Pawn(team, self.gameboard)
-            this_tile.set_occupant(new_piece)
+            new_piece = Pawn(team, self.gameboard, this_tile)
             team_roster.append(new_piece)
 
         back_row_roster = self.generate_back_row(team)
@@ -33,8 +32,7 @@ class Game(object):
         team_roster = []
         for _ in range(0, len(pawn_row)):
             this_tile = pawn_row[_]
-            new_piece = Pawn(team, self.gameboard)
-            this_tile.set_occupant(new_piece)
+            new_piece = Pawn(team, self.gameboard, this_tile)
             team_roster.append(new_piece)
 
         back_row_roster = self.generate_back_row(team)
@@ -50,27 +48,18 @@ class Game(object):
         """
         if team == 'black':
             back_row = self.gameboard.tiles[8]
-        elif team == 'white':
+        else:
             back_row = self.gameboard.tiles[1]
 
         back_row_roster = []
-        left_rook = Rook(team, self.gameboard)
-        left_knight = Knight(team, self.gameboard)
-        left_bishop = Bishop(team, self.gameboard)
-        king = King(team, self.gameboard)
-        queen = Queen(team, self.gameboard)
-        right_bishop = Bishop(team, self.gameboard)
-        right_knight = Knight(team, self.gameboard)
-        right_rook = Rook(team, self.gameboard)
-
-        back_row[0].set_occupant(left_rook)
-        back_row[1].set_occupant(left_knight)
-        back_row[2].set_occupant(left_bishop)
-        back_row[3].set_occupant(queen)
-        back_row[4].set_occupant(king)
-        back_row[5].set_occupant(right_bishop)
-        back_row[6].set_occupant(right_knight)
-        back_row[7].set_occupant(right_rook)
+        left_rook = Rook(team, self.gameboard, back_row[0])
+        left_knight = Knight(team, self.gameboard, back_row[1])
+        left_bishop = Bishop(team, self.gameboard, back_row[2])
+        king = King(team, self.gameboard, back_row[3])
+        queen = Queen(team, self.gameboard, back_row[4])
+        right_bishop = Bishop(team, self.gameboard, back_row[5])
+        right_knight = Knight(team, self.gameboard, back_row[6])
+        right_rook = Rook(team, self.gameboard, back_row[7])
 
         back_row_roster.append(left_rook)
         back_row_roster.append(left_knight)
