@@ -20,14 +20,16 @@ class Tile:
         the basic gist here is to set the occupant of the tile and handle all the
         updating necessary, while catching any errors
         :param gamepiece: the new occupant
-        :return: n/a
+        :return: True on success, False on failure
         """
-        if self.occupant == None:
+        if not self.occupant:
             gamepiece.current_tile = None
             self.occupant = gamepiece
             gamepiece.current_tile = self
+            return True
         else:
             print('ERROR TILE ALREADY OCCUPIED')
+            return False
 
 
     def assign_color(self):
