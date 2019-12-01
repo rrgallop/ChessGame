@@ -45,10 +45,8 @@ class Knight(GamePiece):
         m8x = self.current_tile.x - 1
         m8y = self.current_tile.y - 2
         potential_moves.append(tuple([m8x, m8y]))
-        print(f'potential moves: {potential_moves}')
         for move in potential_moves:
-
             if 0 < move[0] < 9 and 0 < move[1] < 9:
-                print(f'in if: {move[0]}, {move[1]}')
                 self.add_valid_move(self.gameboard.get_tile(move[0]-1, move[1]-1))
+        print(f"moves:{self.moveset}")
 

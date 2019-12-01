@@ -10,4 +10,6 @@ class Rook(GamePiece):
     def get_moves(self):
         self.moveset = []
         # until blocked, add all moves on the x- & y-axis, starting from current position
-        self.get_rook_moves()
+        self.get_straight_moves()
+        print(f"moves:{self.moveset}")
+

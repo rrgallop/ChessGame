@@ -50,44 +50,71 @@ class GamePiece(object):
         else:
             return False
 
-    def get_rook_moves(self):
+    def get_straight_moves(self, king=False):
         curr_x = self.current_tile.x
         left_x = curr_x - 1
         right_x = curr_x + 1
         curr_y = self.current_tile.y
         up_y = curr_y + 1
         down_y = curr_y - 1
-        print(f'down_y: {down_y}')
         while 9 > left_x > 0:
             success = self.add_valid_move(self.gameboard.get_tile(left_x - 1, self.current_tile.y - 1))
-            if success:
+            if success and not king:
                 left_x -= 1
             else:
-                print(f'here, {left_x - 1}, {self.current_tile.y - 1}')
                 left_x = 0
         while 9 > right_x > 0:
             success = self.add_valid_move(self.gameboard.get_tile(right_x - 1, self.current_tile.y - 1))
-
-            if success:
+            if success and not king:
                 right_x += 1
             else:
                 right_x = 9
 
         while 0 < up_y < 9:
-            print(f'here in up_y, {self.current_tile.x - 1}, {up_y - 1}')
             success = self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, up_y - 1))
-            if success:
+            if success and not king:
                 up_y += 1
             else:
                 up_y = 9
 
         while 9 > down_y > 0:
-            print(f'here in down_y, {self.current_tile.x - 1}, {down_y - 1}')
             success = self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, down_y - 1))
-            if success:
+            if success and not king:
                 down_y -= 1
             else:
                 down_y = 0
+
+    def get_diagonal_moves(self, king=False):
+        move_distance = 1
+        curr_x = self.current_tile.x - 1
+        curr_y = self.current_tile.y - 1
+        while 0 < curr_x + move_distance < 8 and 0 < curr_y + move_distance < 8:
+            success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y + move_distance))
+            if success and not king:
+                move_distance += 1
+            else:
+                move_distance = 9
+        move_distance = 1
+        while 0 < curr_x + move_distance < 8 and 0 < curr_y - move_distance < 8:
+            success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y - move_distance))
+            if success and not king:
+                move_distance += 1
+            else:
+                move_distance = 9
+        move_distance = 1
+        while 0 < curr_x - move_distance < 8 and 0 < curr_y - move_distance < 8:
+            success = self.add_valid_move(self.gameboard.get_tile(curr_x - move_distance, curr_y - move_distance))
+            if success and not king:
+                move_distance += 1
+            else:
+                move_distance = 9
+        move_distance = 1
+        while 0 < curr_x - move_distance < 8 and 0 < curr_y + move_distance < 8:
+            success = self.add_valid_move(self.gameboard.get_tile(curr_x - move_distance, curr_y + move_distance))
+            if success and not king:
+                move_distance += 1
+            else:
+                move_distance = 9
 
     def __repr__(self):
         """

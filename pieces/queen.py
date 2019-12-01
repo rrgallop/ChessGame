@@ -8,4 +8,8 @@ class Queen(GamePiece):
         self.type = 'Queen'
 
     def get_moves(self):
-        pass
+        self.moveset = []
+        self.get_straight_moves()
+        self.get_diagonal_moves()
+        print(f"moves:{self.moveset}")
+

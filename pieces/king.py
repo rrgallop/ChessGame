@@ -7,4 +7,7 @@ class King(GamePiece):
         self.type = 'King'
 
     def get_moves(self):
-        pass
+        self.moveset = []
+        self.get_diagonal_moves(king=True)
+        self.get_straight_moves(king=True)
+        print(f"moves:{self.moveset}")
