@@ -88,8 +88,7 @@ def play(game):
                     print(selected_tile.occupant)
                     held_unit = selected_tile.occupant
                     selected_tile.occupant.on_mouse = True
-                    if selected_tile.occupant.type == 'Pawn':
-                        selected_tile.occupant.get_moves()
+                    selected_tile.occupant.get_moves()
         pygame.display.flip()
 
 

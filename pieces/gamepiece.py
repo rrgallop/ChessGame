@@ -46,6 +46,9 @@ class GamePiece(object):
     def add_valid_move(self, tile):
         if not tile.is_occupied():
             self.moveset.append(tile)
+            return True
+        else:
+            return False
 
     def __repr__(self):
         """

@@ -22,10 +22,6 @@ class Pawn(GamePiece):
             self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
         print(f"moves:{self.moveset}")
 
-    def add_valid_move(self, tile):
-        if not tile.is_occupied():
-            self.moveset.append(tile)
-
 
 
 
