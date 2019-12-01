@@ -66,15 +66,9 @@ def play(game):
             if event.type == pygame.MOUSEBUTTONUP:
                 # release the unit, and if it's released on a tile it can be moved to, move it
                 if held_unit:
-                    tile_x, tile_y = math.floor(mx / SQUARE_SIZE), 7 - math.floor(my / SQUARE_SIZE)
-                    new_tile = game.gameboard.get_tile(tile_x, tile_y)
-                    if new_tile in held_unit.moveset:
-                        held_unit.move_to(new_tile)
-                        selected_tile.selected = False
-                        selected_tile = None
                     held_unit.on_mouse = False
                     held_unit = None
-
+                pass
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if selected_tile:

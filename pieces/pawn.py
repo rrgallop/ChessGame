@@ -18,15 +18,7 @@ class Pawn(GamePiece):
         if self.in_start_position:
             self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
             self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction*2))
-        else:
-            self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
         print(f"moves:{self.moveset}")
-
-    def move_to(self, tile):
-        self.current_tile.occupant = None
-        success = tile.set_occupant(self)
-        if self.in_start_position:
-            self.in_start_position = False
 
 
 
