@@ -16,11 +16,15 @@ class Pawn(GamePiece):
         else:
             direction = 1
         if self.in_start_position:
-            self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
-            self.moveset.append(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction*2))
+            self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
+            self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction*2))
+        else:
+            self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + direction))
         print(f"moves:{self.moveset}")
 
-
+    def add_valid_move(self, tile):
+        if not tile.is_occupied():
+            self.moveset.append(tile)
 
 
 

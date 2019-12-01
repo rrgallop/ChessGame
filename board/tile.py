@@ -29,6 +29,8 @@ class Tile:
         else:
             print('ERROR TILE ALREADY OCCUPIED')
 
+    def is_occupied(self):
+        return self.occupant
 
     def assign_color(self):
         """

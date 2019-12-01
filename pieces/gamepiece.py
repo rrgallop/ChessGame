@@ -27,6 +27,8 @@ class GamePiece(object):
         # a path of movement isn't blocked by another piece.
         self.moveset = []
 
+        self.in_start_position = True
+
         # a piece is no longer active when it is captured by the opposing team
         self.active = True
 
@@ -34,6 +36,16 @@ class GamePiece(object):
         # only 1 piece can occupy a tile at a time.
         self.current_tile = None
         tile.set_occupant(self)
+
+    def move_to(self, tile):
+        if tile in self.moveset:
+            self.current_tile.occupant = None
+            tile.set_occupant(self)
+            self.in_start_position = False
+
+    def add_valid_move(self, tile):
+        if not tile.is_occupied():
+            self.moveset.append(tile)
 
     def __repr__(self):
         """
