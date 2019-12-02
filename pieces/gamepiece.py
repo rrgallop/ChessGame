@@ -88,28 +88,29 @@ class GamePiece(object):
         move_distance = 1
         curr_x = self.current_tile.x - 1
         curr_y = self.current_tile.y - 1
-        while 0 < curr_x + move_distance < 8 and 0 < curr_y + move_distance < 8:
+        while 0 < curr_x + move_distance < 8 and 0 <= curr_y + move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y + move_distance))
+            print(f'{curr_x + move_distance}, {curr_y + move_distance} is a valid move')
             if success and not king:
                 move_distance += 1
             else:
                 move_distance = 9
         move_distance = 1
-        while 0 < curr_x + move_distance < 8 and 0 < curr_y - move_distance < 8:
+        while 0 < curr_x + move_distance < 8 and 0 <= curr_y - move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y - move_distance))
             if success and not king:
                 move_distance += 1
             else:
                 move_distance = 9
         move_distance = 1
-        while 0 < curr_x - move_distance < 8 and 0 < curr_y - move_distance < 8:
+        while 0 < curr_x - move_distance < 8 and 0 <= curr_y - move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x - move_distance, curr_y - move_distance))
             if success and not king:
                 move_distance += 1
             else:
                 move_distance = 9
         move_distance = 1
-        while 0 < curr_x - move_distance < 8 and 0 < curr_y + move_distance < 8:
+        while 0 <= curr_x - move_distance < 8 and 0 < curr_y + move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x - move_distance, curr_y + move_distance))
             if success and not king:
                 move_distance += 1
