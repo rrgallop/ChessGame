@@ -11,3 +11,5 @@ class King(GamePiece):
         self.get_diagonal_moves(king=True)
         self.get_straight_moves(king=True)
         print(f"moves:{self.moveset}")
+        print(f"captures:{self.captures}")
+

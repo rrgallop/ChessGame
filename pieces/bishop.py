@@ -15,3 +15,4 @@ class Bishop(GamePiece):
         self.moveset = []
         self.get_diagonal_moves()
         print(f"moves:{self.moveset}")
+        print(f"captures:{self.captures}")

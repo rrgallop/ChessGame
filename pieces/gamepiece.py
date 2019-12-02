@@ -27,6 +27,8 @@ class GamePiece(object):
         # a path of movement isn't blocked by another piece.
         self.moveset = []
 
+        self.captures = []
+
         self.in_start_position = True
 
         # a piece is no longer active when it is captured by the opposing team
@@ -48,6 +50,8 @@ class GamePiece(object):
             self.moveset.append(tile)
             return True
         else:
+            if self.team is not tile.occupant.team:
+                self.captures.append(tile.occupant)
             return False
 
     def get_straight_moves(self, king=False):
@@ -90,7 +94,6 @@ class GamePiece(object):
         curr_y = self.current_tile.y - 1
         while 0 <= curr_x + move_distance < 8 and 0 <= curr_y + move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y + move_distance))
-            print(f'{curr_x + move_distance}, {curr_y + move_distance} is a valid move')
             if success and not king:
                 move_distance += 1
             else:

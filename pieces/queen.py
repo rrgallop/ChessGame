@@ -12,4 +12,5 @@ class Queen(GamePiece):
         self.get_straight_moves()
         self.get_diagonal_moves()
         print(f"moves:{self.moveset}")
+        print(f"captures:{self.captures}")
 

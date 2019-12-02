@@ -12,4 +12,5 @@ class Rook(GamePiece):
         # until blocked, add all moves on the x- & y-axis, starting from current position
         self.get_straight_moves()
         print(f"moves:{self.moveset}")
+        print(f"captures:{self.captures}")
 

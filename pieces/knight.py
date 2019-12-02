@@ -49,4 +49,6 @@ class Knight(GamePiece):
             if 0 < move[0] < 9 and 0 < move[1] < 9:
                 self.add_valid_move(self.gameboard.get_tile(move[0]-1, move[1]-1))
         print(f"moves:{self.moveset}")
+        print(f"captures:{self.captures}")
+
 
