@@ -68,11 +68,15 @@ def play(game):
                 if held_unit:
                     tile_x, tile_y = math.floor(mx / SQUARE_SIZE), 7 - math.floor(my / SQUARE_SIZE)
                     move_tile = game.gameboard.get_tile(tile_x, tile_y)
+
+                    # end turn
                     held_unit.move_to(move_tile)
                     held_unit.on_mouse = False
                     held_unit = None
                     selected_tile.selected = False
                     selected_tile = None
+
+
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if selected_tile:
@@ -84,7 +88,7 @@ def play(game):
                 selected_tile.selected = True
 
                 # code used to "put" selected unit on the mouse cursor
-                if selected_tile.occupant:
+                if selected_tile.is_occupied() and selected_tile.occupant.team == game.gameboard.active_team:
                     print(selected_tile.occupant)
                     held_unit = selected_tile.occupant
                     selected_tile.occupant.on_mouse = True
@@ -173,8 +177,11 @@ def print_board(board):
                         pygame.draw.rect(screen, (0, 200, 0), ((move.x - 1) * SQUARE_SIZE, (
                             (8 * SQUARE_SIZE) - move.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
                         ))
+                    for capture in tile.occupant.captures:
+                        pygame.draw.rect(screen, (100, 100, 0), ((capture.current_tile.x - 1) * SQUARE_SIZE, (
+                                (8 * SQUARE_SIZE) - capture.current_tile.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
+                                                               ))
                     pygame.display.flip()
-
 
 
 screen = pygame.display.set_mode((8*SQUARE_SIZE, 8*SQUARE_SIZE))

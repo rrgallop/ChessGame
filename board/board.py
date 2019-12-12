@@ -4,6 +4,7 @@ from board.tile import Tile
 class GameBoard(object):
     def __init__(self):
         self.tiles = self.generate_tiles()
+        self.active_team = 'white'
 
     def get_tile(self, x, y):
         """
