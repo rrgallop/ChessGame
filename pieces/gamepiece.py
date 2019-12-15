@@ -114,8 +114,14 @@ class GamePiece(object):
                 other_team = self.gameboard.game.white_team
 
             for piece in other_team:
-                for move in piece.moveset:
-                    if tile in piece.moveset:
+                if piece.type is not 'Pawn':
+                    for move in piece.moveset:
+                        if tile.x == move.x and tile.y == move.y:
+                            return False
+                if piece.type is 'Pawn':
+                    if tile.x == piece.current_tile.x+1 and tile.y == piece.current_tile.y+piece.direction:
+                        return False
+                    if tile.x == piece.current_tile.x-1 and tile.y == piece.current_tile.y + piece.direction:
                         return False
             return True
 
