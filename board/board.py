@@ -3,6 +3,8 @@ from board.tile import Tile
 
 class GameBoard(object):
     def __init__(self):
+
+        # tiles range from 1 to 8 in both the x and y planes. they are indexed from 0 to 7 in the game's code
         self.tiles = self.generate_tiles()
         self.active_team = 'white'
 

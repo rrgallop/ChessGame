@@ -188,5 +188,6 @@ screen = pygame.display.set_mode((8*SQUARE_SIZE, 8*SQUARE_SIZE))
 screen_title = 'Chess Game'
 pygame.display.set_caption(screen_title)
 game = Game()
+
 play(game)
 

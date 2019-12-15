@@ -81,8 +81,8 @@ class GamePiece(object):
 
             return False
 
-    def within_board(self, tile):
-        return 0 <= tile <= 8
+    def within_board(self, x,y):
+        return 0 < x < 8 and 0 < y < 8
 
     def get_straight_moves(self, king=False):
         curr_x = self.current_tile.x
