@@ -9,7 +9,7 @@ class Pawn(GamePiece):
         super().__init__(team, board, tile)
         self.type = 'Pawn'
         self.in_start_position = True
-        self.enpassant_possible = False
+        self.enpassant_possible = 0
         self.direction = 1
         if self.team == 'black':
             self.direction = -1
@@ -17,12 +17,14 @@ class Pawn(GamePiece):
     def move_to(self, tile):
         if tile in self.moveset:
             self.current_tile.occupant = None
-            tile.set_occupant(self)
-            if self.in_start_position:
+
+            if self.in_start_position and tile.y == self.current_tile.y+(self.direction*2):
                 self.in_start_position = False
-                self.enpassant_possible = True
+                self.enpassant_possible = 2
             else:
-                self.enpassant_possible = False
+                if self.in_start_position and not tile.y == self.current_tile.y+(self.direction*2):
+                    self.in_start_position = False
+            tile.set_occupant(self)
 
         if tile in self.captures:
             if tile.is_occupied():

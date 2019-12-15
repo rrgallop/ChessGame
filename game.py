@@ -16,8 +16,15 @@ class Game(object):
     def get_moves(self):
         for piece in self.white_team:
             piece.get_moves()
+            if piece.type == 'Pawn':
+                if piece.enpassant_possible > 0:
+                    piece.enpassant_possible -= 1
+
         for piece in self.black_team:
             piece.get_moves()
+            if piece.type == 'Pawn':
+                if piece.enpassant_possible > 0:
+                    piece.enpassant_possible -= 1
 
     def end_turn(self):
         self.get_moves()
