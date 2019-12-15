@@ -60,11 +60,64 @@ class GamePiece(object):
 
     def intersects_with_check(self, tile):
         checking_piece = self.gameboard.get_checking_piece()
+        # print('thinking about ', tile)
+        for t in checking_piece.captures:
+            if t.occupant.type == 'King':
+                king = t.occupant
         for move in checking_piece.moveset:
-            if tile.x == move.x and tile.y == move.y:
-                print(f'{self} intersecting with {checking_piece}')
-                return True
+            # print(f'comparing {tile} to {move}')
+            # # if you can intersect a tile in the checking piece's moveset, add that move
+            # print(f'{tile.x}={move.x}?  {tile.y}={move.y}?')
+            if tile == move:
+                # but only if the king is found on the ray of the move
+                if self.king_found(tile, checking_piece, king):
+                    return True
+
         return False
+
+    def king_found(self, move, cpiece, king):
+        # if the move intersects with the vector of the movement inducing check, it's a valid move
+        # print(f'king vector: {king.current_tile.x-cpiece.current_tile.x}, {king.current_tile.y-cpiece.current_tile.y}')
+        x_diff = king.current_tile.x-cpiece.current_tile.x
+        y_diff = king.current_tile.y-cpiece.current_tile.y
+
+        while x_diff > 0:
+            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
+                    return True
+            x_diff -= 1
+
+        while x_diff < 0:
+            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
+                    return True
+            x_diff += 1
+
+        while y_diff > 0:
+            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
+                    return True
+            y_diff -= 1
+
+        while y_diff < 0:
+            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
+                    return True
+            y_diff += 1
+            # print(f'{move.x} == {cpiece.current_tile.x + x_diff} and {move.y} == {cpiece.current_tile.y + y_diff}')
+
+        return False
+
+    def move_is_safe(self, tile):
+        if self.type is not 'King':
+            return True
+        if self.type is 'King':
+            if self.team is 'white':
+                other_team = self.gameboard.game.black_team
+            else:
+                other_team = self.gameboard.game.white_team
+
+            for piece in other_team:
+                for move in piece.moveset:
+                    if tile in piece.moveset:
+                        return False
+            return True
 
     def add_valid_move(self, tile):
         """
@@ -73,28 +126,54 @@ class GamePiece(object):
         """
         if self.active:
             if not self.gameboard.in_check:
-                if not tile.is_occupied():
-                    self.moveset.append(tile)
-                    return True
-                else:
-                    if self.team is not tile.occupant.team:
-                        if self.type is not 'Pawn':
-                            self.add_capture(tile)
-                    return False
-            else:
-                # in check
-                if not tile.is_occupied():
-                    if self.intersects_with_check(tile):
-                        self.moveset.append(tile)
-                        return False
-                    else:
+                if self.type is 'King':
+                    if not tile.is_occupied():
+                        if self.move_is_safe(tile):
+                            self.moveset.append(tile)
                         return True
-                else:
-                    if self.team is not tile.occupant.team:
-                        if tile.occupant.is_checking:
+                    else:
+                        if self.team is not tile.occupant.team:
+                            self.add_capture(tile)
+                        return False
+                if self.type is not 'King':
+                    if not tile.is_occupied():
+                        self.moveset.append(tile)
+                        return True
+                    else:
+                        if self.team is not tile.occupant.team:
                             if self.type is not 'Pawn':
                                 self.add_capture(tile)
-                    return False
+                        return False
+            else:
+                # in check
+                if self.is_checking:
+                    if not tile.is_occupied():
+                        self.moveset.append(tile)
+                        return True
+                    else:
+                        if self.team is not tile.occupant.team:
+                            if self.type is not 'Pawn':
+                                self.add_capture(tile)
+                        return False
+                else:
+                    if not self.is_checking:
+                        if not tile.is_occupied():
+
+                            if self.type is 'King' and not self.intersects_with_check(tile):
+                                    self.moveset.append(tile)
+
+                            if self.intersects_with_check(tile) and self.type is not 'King':
+                                    self.moveset.append(tile)
+                                    return False
+                            else:
+                                # consider next move but don't append
+                                return True
+                        else:
+                            if self.team is not tile.occupant.team:
+                                if tile.occupant.is_checking:
+                                    if self.type is not 'Pawn':
+                                        self.add_capture(tile)
+                            return False
 
         return False
 

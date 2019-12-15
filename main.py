@@ -85,7 +85,7 @@ def play(game):
                     selected_tile.selected = False
                     selected_tile = None
                 tile_x, tile_y = math.floor(mx/SQUARE_SIZE), 7-math.floor(my/SQUARE_SIZE)
-                # print(f"tile: {tile_x+1},{tile_y+1}")
+                print(f"tile: {tile_x+1},{tile_y+1}")
                 selected_tile = game.gameboard.get_tile(tile_x, tile_y)
                 selected_tile.selected = True
 
@@ -95,8 +95,9 @@ def play(game):
                     held_unit = selected_tile.occupant
                     held_unit.on_mouse = True
                     held_unit.get_moves()
-                    # print(f"moves:{held_unit.moveset}")
-                    # print(f"captures:{held_unit.captures}")
+                if selected_tile.is_occupied():
+                    print(f"moves:{selected_tile.occupant.moveset}")
+                    print(f"captures:{selected_tile.occupant.captures}")
         pygame.display.flip()
 
 

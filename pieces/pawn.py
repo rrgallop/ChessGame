@@ -52,7 +52,7 @@ class Pawn(GamePiece):
             if 1 < self.current_tile.y < 8:
                 self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction))
 
-        # captures
+        # diagonal left capture
         if self.within_board(self.current_tile.x-1, self.current_tile.y+self.direction):
             diag_left_tile = self.gameboard.get_tile(self.current_tile.x-2, self.current_tile.y-1 + self.direction)
             if diag_left_tile.is_occupied() and self.team != diag_left_tile.occupant.team:
@@ -72,6 +72,7 @@ class Pawn(GamePiece):
                     if self.team != left_tile.occupant.team and left_tile.occupant.enpassant_possible:
                         self.captures.append(diag_left_tile)
 
+        # diagonal right capture
         if self.within_board(self.current_tile.x, self.current_tile.y+self.direction):
             diag_right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y-1 + self.direction)
             if diag_right_tile.is_occupied() and self.team != diag_right_tile.occupant.team:
