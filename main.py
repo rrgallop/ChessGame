@@ -70,13 +70,15 @@ def play(game):
                     move_tile = game.gameboard.get_tile(tile_x, tile_y)
 
                     # end turn
-                    held_unit.move_to(move_tile)
+                    if move_tile is not held_unit.current_tile and \
+                            (move_tile in held_unit.moveset or move_tile in held_unit.captures):
+                        held_unit.move_to(move_tile)
+                        game.end_turn()
+
                     held_unit.on_mouse = False
                     held_unit = None
                     selected_tile.selected = False
                     selected_tile = None
-
-
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if selected_tile:
@@ -91,8 +93,10 @@ def play(game):
                 if selected_tile.is_occupied() and selected_tile.occupant.team == game.gameboard.active_team:
                     print(selected_tile.occupant)
                     held_unit = selected_tile.occupant
-                    selected_tile.occupant.on_mouse = True
-                    selected_tile.occupant.get_moves()
+                    held_unit.on_mouse = True
+                    held_unit.get_moves()
+                    print(f"moves:{held_unit.moveset}")
+                    print(f"captures:{held_unit.captures}")
         pygame.display.flip()
 
 
@@ -172,14 +176,14 @@ def print_board(board):
 
                 # if the tile has an occupant, and the tile is selected, paint the board to represent
                 # the moves currently available to that occupant
-                if tile.selected:
+                if tile.selected and tile.occupant.team == game.gameboard.active_team:
                     for move in tile.occupant.moveset:
                         pygame.draw.rect(screen, (0, 200, 0), ((move.x - 1) * SQUARE_SIZE, (
                             (8 * SQUARE_SIZE) - move.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
                         ))
                     for capture in tile.occupant.captures:
-                        pygame.draw.rect(screen, (100, 100, 0), ((capture.current_tile.x - 1) * SQUARE_SIZE, (
-                                (8 * SQUARE_SIZE) - capture.current_tile.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
+                        pygame.draw.rect(screen, (100, 100, 0), ((capture.x - 1) * SQUARE_SIZE, (
+                                (8 * SQUARE_SIZE) - capture.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
                                                                ))
                     pygame.display.flip()
 

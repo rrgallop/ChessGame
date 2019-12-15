@@ -8,9 +8,8 @@ class Rook(GamePiece):
         self.in_start_position = True
 
     def get_moves(self):
-        self.moveset = []
         # until blocked, add all moves on the x- & y-axis, starting from current position
+        self.moveset = []
+        self.captures = []
         self.get_straight_moves()
-        print(f"moves:{self.moveset}")
-        print(f"captures:{self.captures}")
 

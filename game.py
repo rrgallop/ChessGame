@@ -13,6 +13,19 @@ class Game(object):
         self.black_team = self.generate_black_team()
         self.white_team = self.generate_white_team()
 
+    def get_moves(self):
+        for piece in self.white_team:
+            piece.get_moves()
+        for piece in self.black_team:
+            piece.get_moves()
+
+    def end_turn(self):
+        self.get_moves()
+        if self.gameboard.active_team == 'white':
+            self.gameboard.active_team = 'black'
+        else:
+            self.gameboard.active_team = 'white'
+
     def generate_black_team(self):
         pawn_row = self.gameboard.tiles[7]
         team = 'black'
@@ -23,7 +36,9 @@ class Game(object):
             team_roster.append(new_piece)
 
         back_row_roster = self.generate_back_row(team)
-        team_roster.append(back_row_roster)
+        for piece in back_row_roster:
+            team_roster.append(piece)
+
         return team_roster
 
     def generate_white_team(self):
@@ -36,7 +51,9 @@ class Game(object):
             team_roster.append(new_piece)
 
         back_row_roster = self.generate_back_row(team)
-        team_roster.append(back_row_roster)
+        for piece in back_row_roster:
+            team_roster.append(piece)
+
         return team_roster
 
     def generate_back_row(self, team):

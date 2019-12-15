@@ -44,44 +44,30 @@ class GamePiece(object):
             self.current_tile.occupant = None
             tile.set_occupant(self)
             self.in_start_position = False
-            if self.team == 'white':
-                self.gameboard.active_team = 'black'
-            else:
-                self.gameboard.active_team = 'white'
-            self.moveset = []
-            self.captures = []
-        if tile.occupant in self.captures:
+
+        if tile in self.captures:
             tile.occupant.active = False
             self.current_tile.occupant = None
             tile.occupant = None
             tile.set_occupant(self)
             self.in_start_position = False
-            if self.team == 'white':
-                self.gameboard.active_team = 'black'
-            else:
-                self.gameboard.active_team = 'white'
-            self.moveset = []
-            self.captures = []
+
 
     def add_valid_move(self, tile):
+        """
+        :param tile:
+        :return: Boolean used to determine if continued forward movement is possible
+        """
         if not tile.is_occupied():
             self.moveset.append(tile)
             return True
         else:
             if self.team is not tile.occupant.team:
                 if self.type is not 'Pawn':
-                    self.captures.append(tile.occupant)
-                # else:
-                #     left_tile = self.gameboard.get_tile(self.current_tile.x-2, self.current_tile.y)
-                #     right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y)
-                #     if left_tile.is_occupied() and self.team is not left_tile.occupant.team:
-                #         self.captures.append(tile.occupant)
-                #     if right_tile.is_occupied() and self.team is not right_tile.occupant.team:
-                #         self.captures.append(tile.occupant)
-
+                    self.captures.append(tile)
             return False
 
-    def within_board(self, x,y):
+    def within_board(self, x, y):
         return 0 < x < 8 and 0 < y < 8
 
     def get_straight_moves(self, king=False):

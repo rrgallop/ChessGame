@@ -13,6 +13,5 @@ class Bishop(GamePiece):
         :return:
         """
         self.moveset = []
+        self.captures = []
         self.get_diagonal_moves()
-        print(f"moves:{self.moveset}")
-        print(f"captures:{self.captures}")

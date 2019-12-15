@@ -20,6 +20,7 @@ class Knight(GamePiece):
         :return:
         """
         self.moveset = []
+        self.captures = []
         potential_moves = []
         m1x = self.current_tile.x + 2
         m1y = self.current_tile.y + 1
@@ -48,7 +49,5 @@ class Knight(GamePiece):
         for move in potential_moves:
             if 0 < move[0] < 9 and 0 < move[1] < 9:
                 self.add_valid_move(self.gameboard.get_tile(move[0]-1, move[1]-1))
-        print(f"moves:{self.moveset}")
-        print(f"captures:{self.captures}")
 
 
