@@ -56,24 +56,37 @@ class Pawn(GamePiece):
         if self.within_board(self.current_tile.x-1, self.current_tile.y+self.direction):
             diag_left_tile = self.gameboard.get_tile(self.current_tile.x-2, self.current_tile.y-1 + self.direction)
             if diag_left_tile.is_occupied() and self.team != diag_left_tile.occupant.team:
-                self.captures.append(diag_left_tile)
+                if not self.gameboard.in_check:
+                    self.captures.append(diag_left_tile)
+                    if diag_left_tile.occupant.type == 'King':
+                        self.gameboard.in_check = True
+                        self.is_checking = True
+                else:
+                    if diag_left_tile.occupant.is_checking:
+                        self.captures.append(diag_left_tile)
 
             # en passant
             left_tile = self.gameboard.get_tile(self.current_tile.x - 2, self.current_tile.y - 1)
-            if left_tile.is_occupied() and self.team != left_tile.occupant.team and \
-                left_tile.occupant.enpassant_possible:
-                self.captures.append(diag_left_tile)
+            if left_tile.is_occupied():
+                if left_tile.occupant.type == 'Pawn':
+                    if self.team != left_tile.occupant.team and left_tile.occupant.enpassant_possible:
+                        self.captures.append(diag_left_tile)
 
         if self.within_board(self.current_tile.x, self.current_tile.y+self.direction):
             diag_right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y-1 + self.direction)
             if diag_right_tile.is_occupied() and self.team != diag_right_tile.occupant.team:
-                self.captures.append(diag_right_tile)
-            right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y-1)
+                if not self.gameboard.in_check:
+                    self.captures.append(diag_right_tile)
+                else:
+                    if diag_right_tile.occupant.is_checking:
+                        self.captures.append(diag_right_tile)
 
             # en passant
-            if right_tile.is_occupied() and self.team != right_tile.occupant.team and \
-                right_tile.occupant.enpassant_possible:
-                self.captures.append(diag_right_tile)
+            right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y-1)
+            if right_tile.is_occupied():
+                if right_tile.occupant.type == 'Pawn':
+                    if self.team != right_tile.occupant.team and right_tile.occupant.enpassant_possible:
+                        self.captures.append(diag_right_tile)
 
 
 

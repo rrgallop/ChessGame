@@ -34,6 +34,8 @@ class GamePiece(object):
         # a piece is no longer active when it is captured by the opposing team
         self.active = True
 
+        self.is_checking = False
+
         # the current tile the piece is standing on.
         # only 1 piece can occupy a tile at a time.
         self.current_tile = None
@@ -48,24 +50,62 @@ class GamePiece(object):
         if tile in self.captures:
             tile.occupant.active = False
             self.current_tile.occupant = None
+            if tile.occupant.is_checking:
+                self.gameboard.in_check = False
+                tile.occupant.is_checking = False
             tile.occupant = None
             tile.set_occupant(self)
             self.in_start_position = False
 
+    def intersects_with_check(self):
+        return False
 
     def add_valid_move(self, tile):
         """
         :param tile:
         :return: Boolean used to determine if continued forward movement is possible
         """
-        if not tile.is_occupied():
-            self.moveset.append(tile)
-            return True
-        else:
-            if self.team is not tile.occupant.team:
-                if self.type is not 'Pawn':
-                    self.captures.append(tile)
-            return False
+        if self.active:
+            if not self.gameboard.in_check:
+                if not tile.is_occupied():
+                    self.moveset.append(tile)
+                    return True
+                else:
+                    if self.team is not tile.occupant.team:
+                        if self.type is not 'Pawn':
+                            self.add_capture(tile)
+                    return False
+            else:
+                # in check
+                if not tile.is_occupied():
+                    if self.intersects_with_check():
+                        self.moveset.append(tile)
+                        return True
+                    else:
+                        return True
+                else:
+                    if self.team is not tile.occupant.team:
+                        if tile.occupant.is_checking:
+                            if self.type is not 'Pawn':
+                                self.add_capture(tile)
+                    return False
+
+        return False
+
+    def add_capture(self, tile):
+        self.captures.append(tile)
+        if tile.occupant.type == 'King':
+            self.gameboard.in_check = True
+            self.is_checking = True
+
+    def add_pawn_capture(self):
+        diag_right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y - 1 + self.direction)
+        if diag_right_tile.is_occupied() and self.team != diag_right_tile.occupant.team:
+            if not self.gameboard.in_check:
+                self.captures.append(diag_right_tile)
+            else:
+                if diag_right_tile.occupant.is_checking:
+                    self.captures.append(diag_right_tile)
 
     def within_board(self, x, y):
         return 0 < x < 8 and 0 < y < 8
