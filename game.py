@@ -9,9 +9,18 @@ from pieces.queen import Queen
 
 class Game(object):
     def __init__(self):
-        self.gameboard = GameBoard()
+        self.gameboard = GameBoard(self)
         self.black_team = self.generate_black_team()
         self.white_team = self.generate_white_team()
+
+    def get_checking_piece(self):
+        for piece in self.white_team:
+            if piece.is_checking:
+                return piece
+
+        for piece in self.black_team:
+            if piece.is_checking:
+                return piece
 
     def get_moves(self):
         for piece in self.white_team:

@@ -11,6 +11,9 @@ class Tile:
         # used to track which tile the user has clicked on last
         self.selected = False
 
+        # true when moving here would end check state
+        self.intersects_with_check = False
+
         # Tiles are either white or black, so we determine that during board creation
         self.color = self.assign_color()
 

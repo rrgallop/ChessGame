@@ -46,6 +46,7 @@ class GamePiece(object):
             self.current_tile.occupant = None
             tile.set_occupant(self)
             self.in_start_position = False
+            self.gameboard.in_check = False
 
         if tile in self.captures:
             tile.occupant.active = False
@@ -57,7 +58,12 @@ class GamePiece(object):
             tile.set_occupant(self)
             self.in_start_position = False
 
-    def intersects_with_check(self):
+    def intersects_with_check(self, tile):
+        checking_piece = self.gameboard.get_checking_piece()
+        for move in checking_piece.moveset:
+            if tile.x == move.x and tile.y == move.y:
+                print(f'{self} intersecting with {checking_piece}')
+                return True
         return False
 
     def add_valid_move(self, tile):
@@ -78,9 +84,9 @@ class GamePiece(object):
             else:
                 # in check
                 if not tile.is_occupied():
-                    if self.intersects_with_check():
+                    if self.intersects_with_check(tile):
                         self.moveset.append(tile)
-                        return True
+                        return False
                     else:
                         return True
                 else:
@@ -97,15 +103,6 @@ class GamePiece(object):
         if tile.occupant.type == 'King':
             self.gameboard.in_check = True
             self.is_checking = True
-
-    def add_pawn_capture(self):
-        diag_right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y - 1 + self.direction)
-        if diag_right_tile.is_occupied() and self.team != diag_right_tile.occupant.team:
-            if not self.gameboard.in_check:
-                self.captures.append(diag_right_tile)
-            else:
-                if diag_right_tile.occupant.is_checking:
-                    self.captures.append(diag_right_tile)
 
     def within_board(self, x, y):
         return 0 < x < 8 and 0 < y < 8

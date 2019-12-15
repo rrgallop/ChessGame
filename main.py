@@ -3,7 +3,7 @@ from board.board import GameBoard
 from game import Game
 import math
 
-SQUARE_SIZE = 50
+SQUARE_SIZE = 40
 
 BLACK_KING = pygame.image.load('images/black_king.png')
 BLACK_QUEEN = pygame.image.load('images/black_queen.png')
@@ -30,7 +30,7 @@ def scale_images(team_list):
     """
     new_team_list = []
     for image in team_list:
-        new_team_list.append(pygame.transform.scale(image, (50, 50)))
+        new_team_list.append(pygame.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE)))
     return new_team_list
 
 

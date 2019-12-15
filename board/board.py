@@ -2,12 +2,13 @@ from board.tile import Tile
 
 
 class GameBoard(object):
-    def __init__(self):
+    def __init__(self, game):
 
         # tiles range from 1 to 8 in both the x and y planes. they are indexed from 0 to 7 in the game's code
         self.tiles = self.generate_tiles()
         self.in_check = False
         self.active_team = 'white'
+        self.game = game
 
     def get_tile(self, x, y):
         """
@@ -41,6 +42,9 @@ class GameBoard(object):
             tiles[y] = tile_list
 
         return tiles
+
+    def get_checking_piece(self):
+        return self.game.get_checking_piece()
 
     def __repr__(self):
         """
