@@ -43,19 +43,20 @@ class Pawn(GamePiece):
     def get_moves(self):
         self.moveset = []
         self.captures = []
-
+        one_move = self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction)
+        two_move = self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction*2)
         if self.in_start_position:
-            self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction))
-            if not self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction).is_occupied():
-                self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction*2))
+            self.add_valid_move(one_move)
+            if not one_move.occupant:
+                self.add_valid_move(two_move)
         else:
-            if 1 < self.current_tile.y < 8:
-                self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, self.current_tile.y - 1 + self.direction))
+            if one_move:
+                self.add_valid_move(one_move)
 
         # diagonal left capture
-        if self.within_board(self.current_tile.x-1, self.current_tile.y+self.direction):
-            diag_left_tile = self.gameboard.get_tile(self.current_tile.x-2, self.current_tile.y-1 + self.direction)
-            if diag_left_tile.is_occupied() and self.team != diag_left_tile.occupant.team:
+        diag_left_tile = self.gameboard.get_tile(self.current_tile.x - 2, self.current_tile.y - 1 + self.direction)
+        if diag_left_tile:
+            if diag_left_tile.occupant and self.team != diag_left_tile.occupant.team:
                 if not self.gameboard.in_check:
                     self.captures.append(diag_left_tile)
                     if diag_left_tile.occupant.type == 'King':
@@ -73,8 +74,8 @@ class Pawn(GamePiece):
                         self.captures.append(diag_left_tile)
 
         # diagonal right capture
-        if self.within_board(self.current_tile.x, self.current_tile.y+self.direction):
-            diag_right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y-1 + self.direction)
+        diag_right_tile = self.gameboard.get_tile(self.current_tile.x, self.current_tile.y - 1 + self.direction)
+        if diag_right_tile:
             if diag_right_tile.is_occupied() and self.team != diag_right_tile.occupant.team:
                 if not self.gameboard.in_check:
                     self.captures.append(diag_right_tile)

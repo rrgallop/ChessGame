@@ -19,10 +19,13 @@ class GameBoard(object):
         :param x: int representing x coord
         :param y: int represeting y coord
         """
+
         row_tiles = list(self.tiles.values())
-        # row_tiles[y][x].selected = True
-        # print(row_tiles[y][x].occupant)
-        return row_tiles[y][x]
+        try:
+            tile = row_tiles[y][x]
+        except IndexError:
+            return None
+        return tile
 
     def generate_tiles(self):
         """
@@ -58,17 +61,17 @@ class GameBoard(object):
                 if tile_list[y].occupant == None:
                     return_str += ' . '
                 elif tile_list[y].occupant.type == 'Pawn':
-                    return_str += ' P '
+                    return_str += ' P ' if tile_list[y].occupant.team == 'white' else ' p '
                 elif tile_list[y].occupant.type == 'King':
-                    return_str += ' K '
+                    return_str += ' K ' if tile_list[y].occupant.team == 'white' else ' k '
                 elif tile_list[y].occupant.type == 'Queen':
-                    return_str += ' Q '
+                    return_str += ' Q ' if tile_list[y].occupant.team == 'white' else ' q '
                 elif tile_list[y].occupant.type == 'Rook':
-                    return_str += ' R '
+                    return_str += ' R ' if tile_list[y].occupant.team == 'white' else ' r '
                 elif tile_list[y].occupant.type == 'Knight':
-                    return_str += ' k '
+                    return_str += ' N ' if tile_list[y].occupant.team == 'white' else ' n '
                 elif tile_list[y].occupant.type == 'Bishop':
-                    return_str += ' B '
+                    return_str += ' B ' if tile_list[y].occupant.team == 'white' else ' b '
             return_str += '\n'
         return return_str
 

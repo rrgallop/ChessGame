@@ -5,6 +5,8 @@ import math
 
 SQUARE_SIZE = 40
 
+DEBUG = True
+
 BLACK_KING = pygame.image.load('images/black_king.png')
 BLACK_QUEEN = pygame.image.load('images/black_queen.png')
 BLACK_ROOK = pygame.image.load('images/black_rook.png')
@@ -98,6 +100,8 @@ def play(game):
                 if selected_tile.is_occupied():
                     print(f"moves:{selected_tile.occupant.moveset}")
                     print(f"captures:{selected_tile.occupant.captures}")
+                    for tile in selected_tile.occupant.captures:
+                        print(tile.occupant)
         pygame.display.flip()
 
 
@@ -187,12 +191,16 @@ def print_board(board):
                                 (8 * SQUARE_SIZE) - capture.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
                                                                ))
                     pygame.display.flip()
+    if DEBUG == True:
+        pygame.draw.rect(screen, (100,100,100), (SQUARE_SIZE*8, SQUARE_SIZE*8, SQUARE_SIZE*9, SQUARE_SIZE*9))
+        pygame.display.flip()
 
 
 screen = pygame.display.set_mode((8*SQUARE_SIZE, 8*SQUARE_SIZE))
 screen_title = 'Chess Game'
 pygame.display.set_caption(screen_title)
 game = Game()
-
+print(game.gameboard)
 play(game)
+
 

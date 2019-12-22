@@ -12,6 +12,8 @@ class Game(object):
         self.gameboard = GameBoard(self)
         self.black_team = self.generate_black_team()
         self.white_team = self.generate_white_team()
+        self.black_king = None
+        self.white_king = None
 
     def get_checking_piece(self):
         for piece in self.white_team:
@@ -22,18 +24,23 @@ class Game(object):
             if piece.is_checking:
                 return piece
 
-    def get_moves(self):
+    def get_white_moves(self):
         for piece in self.white_team:
-            piece.get_moves()
-            if piece.type == 'Pawn':
-                if piece.enpassant_possible:
+            if piece.active:
+                piece.get_moves()
+                if piece.type == 'Pawn' and piece.enpassant_possible:
+                        piece.enpassant_possible -= 1
+
+    def get_black_moves(self):
+        for piece in self.black_team:
+            if piece.active:
+                piece.get_moves()
+                if piece.type == 'Pawn' and piece.enpassant_possible:
                     piece.enpassant_possible -= 1
 
-        for piece in self.black_team:
-            piece.get_moves()
-            if piece.type == 'Pawn':
-                if piece.enpassant_possible:
-                    piece.enpassant_possible -= 1
+    def get_moves(self):
+        self.get_white_moves()
+        self.get_black_moves()
 
     def end_turn(self):
         self.get_moves()
@@ -41,6 +48,7 @@ class Game(object):
             self.gameboard.active_team = 'black'
         else:
             self.gameboard.active_team = 'white'
+        print(f'check: {self.gameboard.in_check}')
 
     def generate_black_team(self):
         pawn_row = self.gameboard.tiles[7]
@@ -102,5 +110,10 @@ class Game(object):
         back_row_roster.append(right_bishop)
         back_row_roster.append(right_knight)
         back_row_roster.append(right_rook)
+
+        if team is 'black':
+            self.black_king = king
+        elif team is 'white':
+            self.white_king = king
 
         return back_row_roster

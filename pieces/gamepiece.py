@@ -59,138 +59,116 @@ class GamePiece(object):
             self.in_start_position = False
 
     def intersects_with_check(self, tile):
-        checking_piece = self.gameboard.get_checking_piece()
-        # print('thinking about ', tile)
-        for t in checking_piece.captures:
-            if t.occupant.type == 'King':
-                king = t.occupant
-        for move in checking_piece.moveset:
-            # print(f'comparing {tile} to {move}')
-            # # if you can intersect a tile in the checking piece's moveset, add that move
-            # print(f'{tile.x}={move.x}?  {tile.y}={move.y}?')
-            if tile == move:
-                # but only if the king is found on the ray of the move
-                if self.king_found(tile, checking_piece, king):
-                    return True
+        cpiece = self.gameboard.get_checking_piece()
+        true_occupant = tile.occupant
+        tile.occupant = self
+        cpiece.get_moves()
+        saves_king = True
+        for piece in cpiece.captures:
+            if piece.occupant.type == 'King':
+                saves_king = False
+        tile.occupant = true_occupant
+        return saves_king
 
-        return False
-
-    def king_found(self, move, cpiece, king):
-        # if the move intersects with the vector of the movement inducing check, it's a valid move
-        # print(f'king vector: {king.current_tile.x-cpiece.current_tile.x}, {king.current_tile.y-cpiece.current_tile.y}')
-        x_diff = king.current_tile.x-cpiece.current_tile.x
-        y_diff = king.current_tile.y-cpiece.current_tile.y
-
-        while x_diff > 0:
-            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
-                    return True
-            x_diff -= 1
-
-        while x_diff < 0:
-            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
-                    return True
-            x_diff += 1
-
-        while y_diff > 0:
-            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
-                    return True
-            y_diff -= 1
-
-        while y_diff < 0:
-            if move.x == cpiece.current_tile.x + x_diff and move.y == cpiece.current_tile.y + y_diff:
-                    return True
-            y_diff += 1
-            # print(f'{move.x} == {cpiece.current_tile.x + x_diff} and {move.y} == {cpiece.current_tile.y + y_diff}')
-
-        return False
+    def get_other_team(self):
+        if self.team is 'white':
+            return self.gameboard.game.black_team
+        else:
+            return self.gameboard.game.white_team
 
     def move_is_safe(self, tile):
         if self.type is not 'King':
             return True
         if self.type is 'King':
-            if self.team is 'white':
-                other_team = self.gameboard.game.black_team
-            else:
-                other_team = self.gameboard.game.white_team
+            # true_occupant = tile.occupant
+            # tile.occupant = self
+            # if self.team == 'white':
+            #     self.gameboard.game.get_black_moves()
+            #     team = self.gameboard.game.white_team
+            # else:
+            #     self.gameboard.game.get_white_moves()
+            #     team = self.gameboard.game.black_team
+            # for piece in team:
+            #     for capture in piece.captures:
+            #         if not capture.occupant:
+            #             return False
+            #         if capture.occupant.type == self.type:
+            #             tile.occupant = None
+            #             return False
+            # tile.occupant = true_occupant
+            # return True
+            return False
 
-            for piece in other_team:
-                if piece.type is not 'Pawn':
-                    for move in piece.moveset:
-                        if tile.x == move.x and tile.y == move.y:
-                            return False
-                if piece.type is 'Pawn':
-                    if tile.x == piece.current_tile.x+1 and tile.y == piece.current_tile.y+piece.direction:
-                        return False
-                    if tile.x == piece.current_tile.x-1 and tile.y == piece.current_tile.y + piece.direction:
-                        return False
-            return True
+            # other_team = self.get_other_team()
+            #
+            # for piece in other_team:
+            #     if piece.type is not 'Pawn' and piece.active:
+            #         for move in piece.moveset:
+            #             if piece.type is 'Queen' and piece.active:
+            #                 print(f'{self.team} {self.type} is thinking {self.gameboard.get_tile(tile.x-1,tile.y-1)} = {self.gameboard.get_tile(move.x-1,move.y-1)}')
+            #             if tile.x == move.x and tile.y == move.y:
+            #                 return False
+            #     if piece.type is 'Pawn' and piece.active:
+            #         if tile.x == piece.current_tile.x+1 and tile.y == piece.current_tile.y+piece.direction:
+            #             return False
+            #         if tile.x == piece.current_tile.x-1 and tile.y == piece.current_tile.y + piece.direction:
+            #             return False
+            # return True
 
     def add_valid_move(self, tile):
         """
         :param tile:
         :return: Boolean used to determine if continued forward movement is possible
         """
-        if self.active:
-            if not self.gameboard.in_check:
-                if self.type is 'King':
-                    if not tile.is_occupied():
-                        if self.move_is_safe(tile):
-                            self.moveset.append(tile)
-                        return True
-                    else:
-                        if self.team is not tile.occupant.team:
-                            self.add_capture(tile)
-                        return False
-                if self.type is not 'King':
-                    if not tile.is_occupied():
-                        self.moveset.append(tile)
-                        return True
-                    else:
-                        if self.team is not tile.occupant.team:
-                            if self.type is not 'Pawn':
-                                self.add_capture(tile)
-                        return False
-            else:
-                # in check
-                if self.is_checking:
-                    if not tile.is_occupied():
-                        self.moveset.append(tile)
-                        return True
-                    else:
-                        if self.team is not tile.occupant.team:
-                            if self.type is not 'Pawn':
-                                self.add_capture(tile)
-                        return False
-                else:
-                    if not self.is_checking:
-                        if not tile.is_occupied():
 
-                            if self.type is 'King' and not self.intersects_with_check(tile):
-                                    self.moveset.append(tile)
-
-                            if self.intersects_with_check(tile) and self.type is not 'King':
-                                    self.moveset.append(tile)
-                                    return False
-                            else:
-                                # consider next move but don't append
-                                return True
-                        else:
-                            if self.team is not tile.occupant.team:
-                                if tile.occupant.is_checking:
-                                    if self.type is not 'Pawn':
-                                        self.add_capture(tile)
-                            return False
+        if not self.gameboard.in_check:
+            if self.type is 'King' and not tile.is_occupied():
+                self.moveset.append(tile)
+                return True
+            elif self.type is 'King' and self.team is not tile.occupant.team:
+                self.add_capture(tile)
+                return False
+            if self.type is not 'King' and not tile.occupant:
+                self.moveset.append(tile)
+                return True
+            elif self.type is not 'King' and self.team is not tile.occupant.team:
+                if self.type is not 'Pawn' and tile.occupant:
+                    self.add_capture(tile)
+                return False
+        #########################################################
+        elif self.gameboard.in_check:
+            # in check
+            if self.is_checking:
+                if not tile.occupant:
+                    self.moveset.append(tile)
+                    return True
+                elif self.team is not tile.occupant.team and self.type is not 'Pawn':
+                    self.add_capture(tile)
+                    return False
+            elif not self.is_checking:
+                if not tile.occupant and self.gameboard.get_checking_piece().team is not self.team:
+                    if self.type is 'King' and not self.intersects_with_check(tile):
+                        self.moveset.append(tile)
+                        return False
+                    if self.type is not 'King' and self.intersects_with_check(tile):
+                        self.moveset.append(tile)
+                        return False
+                    else:  # consider next move but don't append
+                        return True
+                elif not tile.occupant and self.gameboard.get_checking_piece().team is self.team:
+                    self.moveset.append(tile)
+            elif self.team is not tile.occupant.team:
+                if tile.occupant.is_checking and self.type is not 'Pawn':
+                    self.add_capture(tile)
+            return False
 
         return False
 
     def add_capture(self, tile):
         self.captures.append(tile)
         if tile.occupant.type == 'King':
-            self.gameboard.in_check = True
+            # self.gameboard.in_check = True
             self.is_checking = True
-
-    def within_board(self, x, y):
-        return 0 < x < 8 and 0 < y < 8
 
     def get_straight_moves(self, king=False):
         curr_x = self.current_tile.x
@@ -201,30 +179,18 @@ class GamePiece(object):
         down_y = curr_y - 1
         while 9 > left_x > 0:
             success = self.add_valid_move(self.gameboard.get_tile(left_x - 1, self.current_tile.y - 1))
-            if success and not king:
-                left_x -= 1
-            else:
-                left_x = 0
+            left_x -= 1 if success and not king else 9
         while 9 > right_x > 0:
             success = self.add_valid_move(self.gameboard.get_tile(right_x - 1, self.current_tile.y - 1))
-            if success and not king:
-                right_x += 1
-            else:
-                right_x = 9
+            right_x += 1 if success and not king else 9
 
-        while 0 < up_y < 9:
+        while 9 > up_y > 0:
             success = self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, up_y - 1))
-            if success and not king:
-                up_y += 1
-            else:
-                up_y = 9
+            up_y += 1 if success and not king else 9
 
         while 9 > down_y > 0:
             success = self.add_valid_move(self.gameboard.get_tile(self.current_tile.x - 1, down_y - 1))
-            if success and not king:
-                down_y -= 1
-            else:
-                down_y = 0
+            down_y -= 1 if success and not king else 9
 
     def get_diagonal_moves(self, king=False):
         move_distance = 1
@@ -232,31 +198,19 @@ class GamePiece(object):
         curr_y = self.current_tile.y - 1
         while 0 <= curr_x + move_distance < 8 and 0 <= curr_y + move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y + move_distance))
-            if success and not king:
-                move_distance += 1
-            else:
-                move_distance = 9
+            move_distance += 1 if success and not king else 9
         move_distance = 1
         while 0 <= curr_x + move_distance < 8 and 0 <= curr_y - move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x + move_distance, curr_y - move_distance))
-            if success and not king:
-                move_distance += 1
-            else:
-                move_distance = 9
+            move_distance += 1 if success and not king else 9
         move_distance = 1
         while 0 <= curr_x - move_distance < 8 and 0 <= curr_y - move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x - move_distance, curr_y - move_distance))
-            if success and not king:
-                move_distance += 1
-            else:
-                move_distance = 9
+            move_distance += 1 if success and not king else 9
         move_distance = 1
         while 0 <= curr_x - move_distance < 8 and 0 <= curr_y + move_distance < 8:
             success = self.add_valid_move(self.gameboard.get_tile(curr_x - move_distance, curr_y + move_distance))
-            if success and not king:
-                move_distance += 1
-            else:
-                move_distance = 9
+            move_distance += 1 if success and not king else 9
 
     def __repr__(self):
         """
