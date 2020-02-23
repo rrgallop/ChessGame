@@ -5,7 +5,7 @@ from board.board import GameBoard
 class GamePiece(object):
 
     def __init__(self, team, board, tile):
-        # string. 'rook', 'pawn', 'king', 'queen', ...
+        # string. 'rook', 'pawn', 'king', 'queen', 'knight', 'bishop'
         self.type = ''
 
         # 'black' or 'white'
@@ -58,62 +58,11 @@ class GamePiece(object):
             tile.set_occupant(self)
             self.in_start_position = False
 
-    def intersects_with_check(self, tile):
-        cpiece = self.gameboard.get_checking_piece()
-        true_occupant = tile.occupant
-        tile.occupant = self
-        cpiece.get_moves()
-        saves_king = True
-        for piece in cpiece.captures:
-            if piece.occupant.type == 'King':
-                saves_king = False
-        tile.occupant = true_occupant
-        return saves_king
-
     def get_other_team(self):
         if self.team is 'white':
             return self.gameboard.game.black_team
         else:
             return self.gameboard.game.white_team
-
-    def move_is_safe(self, tile):
-        if self.type is not 'King':
-            return True
-        if self.type is 'King':
-            # true_occupant = tile.occupant
-            # tile.occupant = self
-            # if self.team == 'white':
-            #     self.gameboard.game.get_black_moves()
-            #     team = self.gameboard.game.white_team
-            # else:
-            #     self.gameboard.game.get_white_moves()
-            #     team = self.gameboard.game.black_team
-            # for piece in team:
-            #     for capture in piece.captures:
-            #         if not capture.occupant:
-            #             return False
-            #         if capture.occupant.type == self.type:
-            #             tile.occupant = None
-            #             return False
-            # tile.occupant = true_occupant
-            # return True
-            return False
-
-            # other_team = self.get_other_team()
-            #
-            # for piece in other_team:
-            #     if piece.type is not 'Pawn' and piece.active:
-            #         for move in piece.moveset:
-            #             if piece.type is 'Queen' and piece.active:
-            #                 print(f'{self.team} {self.type} is thinking {self.gameboard.get_tile(tile.x-1,tile.y-1)} = {self.gameboard.get_tile(move.x-1,move.y-1)}')
-            #             if tile.x == move.x and tile.y == move.y:
-            #                 return False
-            #     if piece.type is 'Pawn' and piece.active:
-            #         if tile.x == piece.current_tile.x+1 and tile.y == piece.current_tile.y+piece.direction:
-            #             return False
-            #         if tile.x == piece.current_tile.x-1 and tile.y == piece.current_tile.y + piece.direction:
-            #             return False
-            # return True
 
     def add_valid_move(self, tile):
         """
@@ -121,47 +70,20 @@ class GamePiece(object):
         :return: Boolean used to determine if continued forward movement is possible
         """
 
-        if not self.gameboard.in_check:
-            if self.type is 'King' and not tile.is_occupied():
-                self.moveset.append(tile)
-                return True
-            elif self.type is 'King' and self.team is not tile.occupant.team:
-                self.add_capture(tile)
-                return False
-            if self.type is not 'King' and not tile.occupant:
-                self.moveset.append(tile)
-                return True
-            elif self.type is not 'King' and self.team is not tile.occupant.team:
-                if self.type is not 'Pawn' and tile.occupant:
-                    self.add_capture(tile)
-                return False
-        #########################################################
-        elif self.gameboard.in_check:
-            # in check
-            if self.is_checking:
-                if not tile.occupant:
-                    self.moveset.append(tile)
-                    return True
-                elif self.team is not tile.occupant.team and self.type is not 'Pawn':
-                    self.add_capture(tile)
-                    return False
-            elif not self.is_checking:
-                if not tile.occupant and self.gameboard.get_checking_piece().team is not self.team:
-                    if self.type is 'King' and not self.intersects_with_check(tile):
-                        self.moveset.append(tile)
-                        return False
-                    if self.type is not 'King' and self.intersects_with_check(tile):
-                        self.moveset.append(tile)
-                        return False
-                    else:  # consider next move but don't append
-                        return True
-                elif not tile.occupant and self.gameboard.get_checking_piece().team is self.team:
-                    self.moveset.append(tile)
-            elif self.team is not tile.occupant.team:
-                if tile.occupant.is_checking and self.type is not 'Pawn':
-                    self.add_capture(tile)
+        if self.type is 'King' and not tile.is_occupied():
+            self.moveset.append(tile)
+            return True
+        elif self.type is 'King' and self.team is not tile.occupant.team:
+            self.add_capture(tile)
             return False
-
+        if self.type is not 'King' and not tile.occupant:
+            self.moveset.append(tile)
+            return True
+        elif self.type is not 'King' and self.team is not tile.occupant.team:
+            if self.type is not 'Pawn' and tile.occupant:
+                self.add_capture(tile)
+            return False
+        
         return False
 
     def add_capture(self, tile):

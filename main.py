@@ -3,7 +3,8 @@ from board.board import GameBoard
 from game import Game
 import math
 
-SQUARE_SIZE = 40
+SQUARE_SIZE = 75
+OFFSET = SQUARE_SIZE*.25
 
 DEBUG = True
 
@@ -56,7 +57,8 @@ def play(game):
 
     while run:
         mx, my = pygame.mouse.get_pos()
-        print_board(game.gameboard)
+        paint_board(game.gameboard)
+        paint_moves(game.gameboard)
         if held_unit:
             display_image = get_correct_image(held_unit)
             screen.blit(display_image, (mx, my))
@@ -150,8 +152,36 @@ def paint_occupant(tile):
         display_image = get_correct_image(tile.occupant)
         screen.blit(display_image, ((tile.x-1)*SQUARE_SIZE, (8*SQUARE_SIZE)-(tile.y*SQUARE_SIZE)))
 
+def paint_moves(board):
+    # if the tile has an occupant, and the tile is selected, paint the board to represent
+    # the moves currently available to that occupant
+    for k in board.tiles:
+        for tile in board.tiles[k]:
+            if tile.is_occupied():
+                if tile.selected and tile.occupant.team == game.gameboard.active_team:
+                    for move in tile.occupant.moveset:
+                        pygame.draw.rect(screen, (0, 200, 0), ((move.x - 1) * SQUARE_SIZE, (
+                            (8 * SQUARE_SIZE) - move.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                        if move.color == 'black':
+                            pygame.draw.rect(screen, (0, 0, 0), ((move.x - 1)*SQUARE_SIZE+(OFFSET/2), 
+                            ((8 * SQUARE_SIZE)+(OFFSET/2) - move.y*SQUARE_SIZE), SQUARE_SIZE-OFFSET, SQUARE_SIZE-OFFSET))
+                        else:
+                            pygame.draw.rect(screen, (200, 200, 200), ((move.x - 1) * SQUARE_SIZE+(OFFSET/2), 
+                            ((8*SQUARE_SIZE)+(OFFSET/2)-move.y*SQUARE_SIZE), SQUARE_SIZE-OFFSET, SQUARE_SIZE-OFFSET))
+                    for capture in tile.occupant.captures:
+                        pygame.draw.rect(screen, (200, 0, 0), ((capture.x - 1) * SQUARE_SIZE, 
+                        ((8 * SQUARE_SIZE) - capture.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
+                        if capture.color == 'black':
+                            pygame.draw.rect(screen, (0, 0, 0), ((capture.x - 1)*SQUARE_SIZE+(OFFSET/2), 
+                            ((8 * SQUARE_SIZE)+(OFFSET/2) - capture.y*SQUARE_SIZE), SQUARE_SIZE-OFFSET, SQUARE_SIZE-OFFSET))
+                        else:
+                            pygame.draw.rect(screen, (200, 200, 200), ((capture.x - 1) * SQUARE_SIZE+(OFFSET/2), 
+                            ((8*SQUARE_SIZE)+(OFFSET/2)-capture.y*SQUARE_SIZE), SQUARE_SIZE-OFFSET, SQUARE_SIZE-OFFSET))
+                        if capture.is_occupied():  # en-passant
+                            paint_occupant(capture)
 
-def print_board(board):
+
+def paint_board(board):
     """
     Prints the game board to the screen.
 
@@ -164,37 +194,19 @@ def print_board(board):
     """
     for k in board.tiles:
         for tile in board.tiles[k]:
+        
             if tile.color == 'black':
-                pygame.draw.rect(screen, (0, 0, 0), ((tile.x - 1)*SQUARE_SIZE, (
-                        (8 * SQUARE_SIZE) - tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
-                ))
+                pygame.draw.rect(screen, (0, 0, 0), ((tile.x - 1)*SQUARE_SIZE, 
+                    ((8 * SQUARE_SIZE) - tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             else:
-                pygame.draw.rect(screen, (200, 200, 200), ((tile.x - 1) * SQUARE_SIZE, (
-                        (8*SQUARE_SIZE)-tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
-                ))
+                pygame.draw.rect(screen, (200, 200, 200), ((tile.x - 1) * SQUARE_SIZE,
+                    ((8*SQUARE_SIZE)-tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             if tile.selected:
-                pygame.draw.rect(screen, (200, 0, 0), ((tile.x - 1) * SQUARE_SIZE, (
-                        (8*SQUARE_SIZE)-tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
-                ))
+                pygame.draw.rect(screen, (100, 100, 0), ((tile.x - 1) * SQUARE_SIZE,
+                    ((8*SQUARE_SIZE)-tile.y*SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE))
             if tile.occupant:
                 paint_occupant(tile)
-
-                # if the tile has an occupant, and the tile is selected, paint the board to represent
-                # the moves currently available to that occupant
-                if tile.selected and tile.occupant.team == game.gameboard.active_team:
-                    for move in tile.occupant.moveset:
-                        pygame.draw.rect(screen, (0, 200, 0), ((move.x - 1) * SQUARE_SIZE, (
-                            (8 * SQUARE_SIZE) - move.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
-                        ))
-                    for capture in tile.occupant.captures:
-                        pygame.draw.rect(screen, (100, 100, 0), ((capture.x - 1) * SQUARE_SIZE, (
-                                (8 * SQUARE_SIZE) - capture.y * SQUARE_SIZE), SQUARE_SIZE, SQUARE_SIZE
-                                                               ))
-                    pygame.display.flip()
-    if DEBUG == True:
-        pygame.draw.rect(screen, (100,100,100), (SQUARE_SIZE*8, SQUARE_SIZE*8, SQUARE_SIZE*9, SQUARE_SIZE*9))
-        pygame.display.flip()
-
+    
 
 screen = pygame.display.set_mode((8*SQUARE_SIZE, 8*SQUARE_SIZE))
 screen_title = 'Chess Game'

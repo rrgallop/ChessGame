@@ -46,8 +46,6 @@ class GameBoard(object):
 
         return tiles
 
-    def get_checking_piece(self):
-        return self.game.get_checking_piece()
 
     def __repr__(self):
         """

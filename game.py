@@ -10,10 +10,16 @@ from pieces.queen import Queen
 class Game(object):
     def __init__(self):
         self.gameboard = GameBoard(self)
-        self.black_team = self.generate_black_team()
-        self.white_team = self.generate_white_team()
+        self.black_team = self.generate_black_team(self.gameboard)
+        self.white_team = self.generate_white_team(self.gameboard)
         self.black_king = None
         self.white_king = None
+
+        # used to prevent moves which would put self incheck
+        self.shadowboard = GameBoard(self)
+
+    def copy_board_state(self):
+        return True
 
     def get_checking_piece(self):
         for piece in self.white_team:
@@ -50,13 +56,13 @@ class Game(object):
             self.gameboard.active_team = 'white'
         print(f'check: {self.gameboard.in_check}')
 
-    def generate_black_team(self):
-        pawn_row = self.gameboard.tiles[7]
+    def generate_black_team(self, board):
+        pawn_row = board.tiles[7]
         team = 'black'
         team_roster = []
         for _ in range(0, len(pawn_row)):
             this_tile = pawn_row[_]
-            new_piece = Pawn(team, self.gameboard, this_tile)
+            new_piece = Pawn(team, board, this_tile)
             team_roster.append(new_piece)
 
         back_row_roster = self.generate_back_row(team)
@@ -65,13 +71,13 @@ class Game(object):
 
         return team_roster
 
-    def generate_white_team(self):
-        pawn_row = self.gameboard.tiles[2]
+    def generate_white_team(self, board):
+        pawn_row = board.tiles[2]
         team = 'white'
         team_roster = []
         for _ in range(0, len(pawn_row)):
             this_tile = pawn_row[_]
-            new_piece = Pawn(team, self.gameboard, this_tile)
+            new_piece = Pawn(team, board, this_tile)
             team_roster.append(new_piece)
 
         back_row_roster = self.generate_back_row(team)
